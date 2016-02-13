@@ -13,3 +13,16 @@ This guide provides a uniform way to structure your RiotJS code. Making it
 * easier to cache and serve bundles of code separately.
 
 This guide is inspired by [AngularJS Style Guide](https://github.com/johnpapa/angular-styleguide) by John Papa.
+
+
+## Module based development
+
+Riot fits well in the *Module based development* philosophy.
+
+Just like any module - each Riot component - must be [FIRST](https://addyosmani.com/first/):
+
+* **F**ocused (single responsibility)
+* **I**ndependent
+* **R**eusable
+* **S**mall
+* **T**estable
