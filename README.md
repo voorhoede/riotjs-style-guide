@@ -13,3 +13,29 @@ This guide provides a uniform way to structure your [RiotJS](http://riotjs.com/)
 * easier to cache and serve bundles of code separately.
 
 This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpapa/angular-styleguide) by John Papa.
+
+
+## Table of Contents
+
+* [1 module = 1 directory](#1-module--1-directory)
+
+
+## 1 module = 1 directory
+
+Bundle all files which construct a module into a single place.
+
+**Why?**
+
+Bundling module files (Riot tags, tests, assets, docs, etc.) makes them easy to find, move and reuse.
+
+**How?**
+
+Use the module name as directory name and file basename.
+The file extension depends on the purpose of the file.
+
+	modules/
+		my-example/
+			my-example.tag.html
+			my-example.less
+			...
+			README.md
