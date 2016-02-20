@@ -24,10 +24,13 @@ This guide is inspired by [AngularJS Style Guide](https://github.com/johnpapa/an
 
 Always construct your app out of small modules which do one thing and do it well. 
 
+A module is a small self-contained part of an application. The RiotJS micro-framework is specifically designed to help you create *view-logic modules*, which Riot calls *tags*.
+
 ### Why?
 Small modules are easier to learn, understand, maintain, reuse and debug. Both by you and other developers.
 
 ### How?
-Riot tags fit well in the *Module based development* philosophy. Just like any module - each Riot tag - must be [FIRST](https://addyosmani.com/first/): *Focused* ([single responsibility](http://en.wikipedia.org/wiki/Single_responsibility_principle)), *Independent*, *Reusable*, *Small* and *Testable*.
- 
-Ensure your component works in isolation. For instance by adding a stand-alone demo.
+Each riot tag (like any module) must be [FIRST](https://addyosmani.com/first/): *Focused* ([single responsibility](http://en.wikipedia.org/wiki/Single_responsibility_principle)), *Independent*, *Reusable*, *Small* and *Testable*.
+
+If your module does too much or gets too big, split it up into smaller modules which each do just on thing.
+Also ensure your tag module works in isolation. For instance by adding a stand-alone demo.
