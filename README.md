@@ -24,11 +24,11 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 
 Bundle all files which construct a module into a single place.
 
-**Why?**
+### Why?
 
 Bundling module files (Riot tags, tests, assets, docs, etc.) makes them easy to find, move and reuse.
 
-**How?**
+### How?
 
 Use the module name as directory name and file basename.
 The file extension depends on the purpose of the file.
