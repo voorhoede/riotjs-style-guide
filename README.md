@@ -68,13 +68,13 @@ riot --ext tag.html modules/ dist/tags.js
 While Riot supports writing JavaScript inside a tag element [without a `<script>`](http://riotjs.com/guide/#no-script-tag),
 you should **always use `<script>`** around scripting. This is closer to web standards and prevents confusing developers and IDEs. 
 
-**Why?**
+## Why?
 
 * Prevents markup being interpreted as script.
 * Improves IDE support (signals how to interpret).
 * Tells developers where markup stops and scripting starts.
 
-**How?**
+### How?
 
 ```html
 <!-- recommended -->
