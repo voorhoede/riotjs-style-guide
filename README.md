@@ -33,8 +33,8 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 
 **How?**
 
-```javascript
-/* recommended */
+```html
+<!-- recommended -->
 <my-example>
 	<h1>The year is { this.year }</h1>
 	
@@ -43,7 +43,7 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 	</script>
 </my-example>
 
-/* avoid */
+<!-- avoid -->
 <my-example>
 	<h1>The year is { this.year }</h1>
 	
