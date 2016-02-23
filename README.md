@@ -22,6 +22,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [1 module = 1 directory](#1-module--1-directory)
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
+* [Keep tag expressions simple](#keep-tag-expressions-simple)
 
 
 ## Module based development
@@ -166,7 +167,7 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 
 ## Keep tag expressions simple
 
-Riot's inline [expressions syntax](http://riotjs.com/guide/#expressions) are 100% Javascript. This makes them extemely powerful, but potentially also very complex. Therefore you should **keep tag expressions simple**.
+Riot's inline [expressions](http://riotjs.com/guide/#expressions) are 100% Javascript. This makes them extemely powerful, but potentially also very complex. Therefore you should **keep tag expressions simple**.
 
 ### Why?
 
