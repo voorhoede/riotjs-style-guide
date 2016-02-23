@@ -19,6 +19,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 
 * [Module based development](#module-based-development)
 * [Tag module names](#tag-module-names)
+* [1 module = 1 directory](#1-module--1-directory)
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 
@@ -74,6 +75,39 @@ Tag module names must also be:
 <ui-slider /> <!-- all tags are ui elements, so is meaningless -->
 <slider /> <!-- not custom element spec compliant -->
 ```
+
+
+## 1 module = 1 directory
+
+Bundle all files which construct a module into a single place.
+
+### Why?
+
+Bundling module files (Riot tags, tests, assets, docs, etc.) makes them easy to find, move and reuse.
+
+### How?
+
+Use the module name as directory name and file basename.
+The file extension depends on the purpose of the file.
+
+	modules/
+		my-example/
+			my-example.tag.html
+			my-example.less
+			...
+			README.md
+
+If your project uses nested structures, you can nest a module within a module.
+For example a generic `radio-group` module may be placed directly inside "modules/". While `search-filters` may only make sense inside a `search-form` and may therefore be nested:
+
+    modules/
+        radio-group/
+            radio-group.tag.html
+        search-form/
+            search-form.tag.html
+            ...
+            search-filters/
+               search-filters.tag.html
 
 
 ## Use `*.tag.html` extension
