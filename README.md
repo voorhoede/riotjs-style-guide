@@ -59,7 +59,7 @@ Tag module names must also be:
 ### Why?
 
 * The name is used to communicate about the module. So it must be short, meaningful and pronouncable.
-* The `tag` element is inserted into the DOM. As such, they need to adhere the spec.
+* The `tag` element is inserted into the DOM. As such, they need to adhere to the spec.
 
 ### How?
 
@@ -72,7 +72,7 @@ Tag module names must also be:
 <!-- avoid -->
 <btn-group /> <!-- short, but unpronouncable. use `button-group` instead -->
 <ui-slider /> <!-- all tags are ui elements, so is meaningless -->
-<slider />
+<slider /> <!-- not custom element spec compliant -->
 ```
 
 
