@@ -39,3 +39,15 @@ The file extension depends on the purpose of the file.
 			my-example.less
 			...
 			README.md
+
+If your project uses nested structures, you can nest a module within a module.
+For example a generic `radio-group` module may be placed directly inside "modules/". While `search-filters` may only make sense inside a `search-form` and may therefore be nested:
+
+    modules/
+        radio-group/
+            radio-group.tag.html
+        search-form/
+            search-form.tag.html
+            ...
+            search-filters/
+               search-filters.tag.html
