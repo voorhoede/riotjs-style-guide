@@ -22,6 +22,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [1 module = 1 directory](#1-module--1-directory)
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
+* [Put styles in external files](#put-styles-in-external-files)
 
 
 ## Module based development
@@ -163,3 +164,24 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 	this.year = (new Date()).getUTCFullYear();
 </my-example>
 ```
+
+		
+## Put styles in external files
+
+For developer convenience, Riot allows you to define a tag element's style in a [nested `<style>` tag](http://riotjs.com/guide/#tag-styling). While you can [scope](http://riotjs.com/guide/#scoped-css) these styles to the tag element, Riot does not provide true encapsulation. Instead Riot extracts these styles from the tags (JavaScript) and injects them into the document on runtime. Since Riot compiles nested styles to JavaScript and doesn't have true encapsulation, you should instead **put styles in external files**.
+
+### Why?
+
+* External stylesheets can be handled by the browser independently of Riot and tag files. This means styles can be applied to initial markup even if JavaScript errors occur or isn't loaded (yet).
+* External stylesheets can be used in combination with pre-processors (Less, Sass, PostCSS, etc) and your own (existing) build tools.
+* External stylesheets can be minified, served and cached separately. This improves performance.
+* Riot expressions are not supported in nested `<style>`s so there's no added benefit in using them.
+
+### How?
+
+Styles related to the tag and its markup, should be placed in a separate stylesheet file next to the tag file, inside its module directory:
+
+	my-example/
+		my-example.tag.html
+		my-example.(css|less|scss)		<-- external stylesheet next to tag file
+		...
