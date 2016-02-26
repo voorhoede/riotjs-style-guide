@@ -22,6 +22,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [1 module = 1 directory](#1-module--1-directory)
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
+* [Keep tag expressions simple](#keep-tag-expressions-simple)
 * [Tag name as style scope](#tag-name-as-style-scope)
 
 
@@ -164,6 +165,40 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 	this.year = (new Date()).getUTCFullYear();
 </my-example>
 ```
+
+
+## Keep tag expressions simple
+
+Riot's inline [expressions](http://riotjs.com/guide/#expressions) are 100% Javascript. This makes them extemely powerful, but potentially also very complex. Therefore you should **keep tag expressions simple**.
+
+### Why?
+
+* Complex inline expressions are hard to read.
+* Inline expressions can't be reused elsewehere. This can lead to code duplication and code rot.
+* IDEs typically don't have support for expression syntax, so your IDE can't autocomplete or validate.
+
+### How?
+
+Move complex expressions to tag methods or tag properties. 
+
+```html
+<!-- recommended -->
+<my-example>
+	{ year() + '-' + month() }
+	
+	<script>
+		const twoDigits = (num) => ('0' + num).slice(-2);
+		this.month = () => twoDigits((new Date()).getUTCMonth() +1);
+		this.year  = () => (new Date()).getUTCFullYear();
+	</script>
+</my-example>
+
+<!-- avoid -->
+<my-example>
+	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
+</my-example>
+```
+
 
 ## Tag name as style scope
 
