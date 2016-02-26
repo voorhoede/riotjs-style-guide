@@ -23,6 +23,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
+* [Tag name as style scope](#tag-name-as-style-scope)
 
 
 ## Module based development
@@ -165,6 +166,7 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 </my-example>
 ```
 
+
 ## Keep tag expressions simple
 
 Riot's inline [expressions](http://riotjs.com/guide/#expressions) are 100% Javascript. This makes them extemely powerful, but potentially also very complex. Therefore you should **keep tag expressions simple**.
@@ -195,4 +197,30 @@ Move complex expressions to tag methods or tag properties.
 <my-example>
 	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
 </my-example>
+```
+
+
+## Tag name as style scope
+
+Riot tag elements are custom elements which can very well be used as style scope root.
+Alternatively the module name can be used as CSS class namespace.
+
+### Why?
+
+* Scoping styles to a tag element improves predictability as its prevents styles leaking outside the tag element.
+* Using the same name for the module directory, the Riot tag and the style root makes it easy for developers to understand they belong together.
+
+### How?
+
+Use the tag name as selector, as parent selector or as namespace prefix (depending on your CSS naming strategy):
+
+```css
+/* recommended */
+my-example { }
+my-example li { }
+.my-example__item { }
+
+/* avoid */
+.my-alternative { } /* not scoped to tag or module name */
+.my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
 ```
