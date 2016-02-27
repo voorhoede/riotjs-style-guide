@@ -23,6 +23,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
+* [Keep tag options primitive](#keep-tag-options-primitive)
 * [Tag name as style scope](#tag-name-as-style-scope)
 
 
@@ -197,6 +198,55 @@ Move complex expressions to tag methods or tag properties.
 <my-example>
 	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
 </my-example>
+```
+
+
+## Keep tag options primitive
+
+Riot supports passing options to tag instances using attributes on tag elements. Inside the tag instance these options are available through `opts`. For example the value of `my-attr` on `<my-tag my-attr="{ value }" />` will be available inside `my-tag` via `opts.myAttr`. 
+
+While Riot supports passing complex JavaScript objects via these attributes, you should try to **keep the tag options as primitive as possible**. Try to only use [JavaScript primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive) (strings, numbers, booleans) and functions. Avoid complex objects.
+
+Exceptions to this rule are situations which can only be solved using objects (eg. collections or recursive tags) or well-known objects inside your app (eg. a product in a web shop).
+
+### Why?
+
+* By using an attribute for each option separately the tag has a clear and expressive API.
+* By using only primitives and functions as option values our tag APIs are similar to the APIs of native HTML(5) elements. Which makes our custom elements directly familiar.
+* By using an attribute for each option, other developers can easily understand what is passed to the tag instance.
+* When passing complex objects it's not apparent which properties and methods of the objects are actually being used by the custom tags. This makes it hard to refactor code and can lead to code rot.
+
+### How?
+
+Use a tag attribute per option, with a primitive or function as value:
+
+```html
+<!-- recommended -->
+<range-slider
+	values="[10, 20]"
+	min="0"
+	max="100"
+	step="5"
+	on-slide="{ updateInputs }"
+	on-end="{ updateResults }"
+	/>
+	
+<!-- avoid -->
+<range-slider config="{ complexConfigObject }">
+```
+```html
+<!-- exception: recursive tag, like menu item -->
+<menu-item>
+	<a href="{ opts.url }">{ opts.text }</a>
+	<ul if="{ opts.items }">
+		<li each="{ item in opts.items }">
+			<menu-item 
+				text="{ item.text }" 
+				url="{ item.url }" 
+				items="{ item.items }" />
+		</li>
+	</ul>
+</menu-item>
 ```
 
 
