@@ -23,6 +23,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
+* [Assign `this` to `tag`](#assign-this-to-tag)
 * [Tag name as style scope](#tag-name-as-style-scope)
 
 
@@ -197,6 +198,43 @@ Move complex expressions to tag methods or tag properties.
 <my-example>
 	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
 </my-example>
+```
+
+
+## Assign `this` to `tag`
+
+Within the context of a Riot tag element, `this` is bound to the [tag instance](http://riotjs.com/api/#tag-instance).
+Therefore when you need to reference it in a different context, ensure `this` is available as `tag`.
+
+### Why?
+
+By assigning `this` to a variable named `tag` the variable tells developers it's bound to the [tag instance](http://riotjs.com/api/#tag-instance) wherever it's used.
+
+### How?
+
+```javascript
+/* recommended */
+// ES5: assign `this` to `tag` variable
+var tag = this;
+window.onresize = function() { 
+	tag.adjust();
+}
+
+// ES6: assign `this` to `tag` constant
+const tag = this;
+window.onresize = function() { 
+	tag.adjust();
+}
+
+// ES6: you can still use `this` with fat arrows
+window.onresize = () => {
+	this.adjust();
+}
+
+/* avoid */
+var self = this;
+var _this = this;
+// etc
 ```
 
 
