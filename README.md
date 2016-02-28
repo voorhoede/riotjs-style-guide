@@ -23,6 +23,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
+* [Put tag properties and methods on top](#put-tag-properties-and-methods-on-top)
 * [Tag name as style scope](#tag-name-as-style-scope)
 
 
@@ -199,6 +200,74 @@ Move complex expressions to tag methods or tag properties.
 </my-example>
 ```
 
+
+## Put tag properties and methods on top
+
+Inside a Riot tag element you typically put its markup first, followed by its script.
+Properties and methods bound to the tag (`this`) in the script are directly available in the markup. You should put those tag properties and methods alphabetized at the top of the script. Tag methods longer than a one-liner should be linked to separate functions later in the script.
+
+### Why?
+
+* Placing the tag properties and methods at the top of the script allows you to instantly identify which parts of the tag can be used in the markup.
+* Alphabetizing the properties and methods makes them easy to find.
+* By keeping each tag method or property declaration a one-liner you can get a full overview of the tag at a glance.
+* By moving the full functions behind the tag methods down, you initially hide implementation details.
+
+### How?
+
+Put tag properties and methods on top:
+
+```javascript
+/* recommended: alphabetized properties then methods */
+var tag = this;
+tag.text = '';
+tag.todos = [];
+tag.add = add;
+tag.edit = edit;
+tag.toggle = toggle;
+
+function add(event) {
+	/* ... */
+}
+
+function edit(event) {
+	/* ... */
+}
+
+function toggle(event) {
+	/* ... */
+}	
+
+/* avoid: don't spread out tag properties and methods over script */
+var tag = this;
+
+tag.todos = [];
+tag.add = function(event) {
+	/* ... */
+}
+
+tag.text = '';
+tag.edit = function(event) {
+	/* ... */
+}
+
+tag.toggle = function(event) {
+	/* ... */
+}
+```
+	
+Also put mixins and observables up top:
+
+```javascript
+/* recommended */
+var tag = this;
+// alphabetized properties
+// alphabetized methods
+tag.mixin('someBehaviour');
+tag.on('mount', onMount);
+tag.on('update', onUpdate);
+// etc
+```
 
 ## Tag name as style scope
 
