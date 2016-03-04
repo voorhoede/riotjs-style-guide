@@ -24,6 +24,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
+* [Add a tag demo](#add-a-tag-demo)
 
 
 ## Module based development
@@ -224,3 +225,72 @@ my-example li { }
 .my-alternative { } /* not scoped to tag or module name */
 .my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
 ```
+
+
+# Add a tag demo
+
+Add a `*.demo.html` file with demos of the tag with different configurations, showing how the tag can be used.
+
+## Why?
+
+* A tag demo proofs the module works in isolation.
+* A tag demo gives developers a preview before having to dig into the documentation or code.
+* Demos can illustrate all the possible configurations and variations a tag can be used in. 
+
+## How?
+
+Add a `*.demo.html` file to your module directory:
+
+	modules/
+		city-map/
+			city-map.tag.html
+			city-map.demo.html
+			city-map.css
+			...
+
+Inside the demo file:
+
+* Include `riot+compiler.min.js` to also compile during runtime.
+* Include the tag file (e.g. `./city-map.tag.html`).
+* Create a `demo` tag (`<yield/>`) to embed your demos in (otherwise option attributes are not supported).
+* Write demos inside the `<demo>` tags.
+* As a bonus add `aria-label`s to the `<demo>` tags and style those as title bars.
+* Initialise using `riot.mount('demo', {})`.
+
+Example demo file in `city-tag` module:
+
+```html
+<!-- modules/city-map/city-map.demo.html: -->
+<body>
+    <h1>city-map demos</h1>
+    
+    <demo aria-label="City map of London">
+        <city-map location="London" />    
+    </demo>
+    
+    <demo aria-label="City map of Paris">
+        <city-map location="Paris" />    
+    </demo>
+    
+    <link rel="stylesheet" href="./city-map.css">
+    
+    <script src="path/to/riot+compiler.min.js"></script>
+    <script type="riot/tag" src="./city-map.tag.html"></script> 
+    <script>
+        riot.tag('demo','<yield/>');
+        riot.mount('demo', {});
+    </script>
+    
+    <style>
+    	/* add a grey bar with the `aria-label` as demo title */
+    	demo:before {
+        	content: "Demo: " attr(aria-label);
+	        display: block;
+        	background: #F3F5F5;
+        	padding: .5em;
+        	clear: both;
+        }
+    </style>
+</body>
+```
+Note: this is a working concept, but could be much cleaner using build scripts.
