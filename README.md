@@ -221,7 +221,7 @@ var tag = this;
 tag.todos = [];
 tag.add = add;
 
-function add(e) {
+function add() {
 	if (tag.text) {
 		tag.todos.push({ title: tag.text });
 		tag.text = tag.input.value = '';
@@ -231,7 +231,7 @@ function add(e) {
 /* avoid */
 todos = [];
 
-add(e) {
+add() {
 	if (this.text) {
 		this.todos.push({ title: this.text });
 		this.text = this.input.value = '';
