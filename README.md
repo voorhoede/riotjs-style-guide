@@ -23,8 +23,9 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
-* [Tag name as style scope](#tag-name-as-style-scope)
+* [Use tag name as style scope](#use-tag-name-as-style-scope)
 * [Add a tag demo](#add-a-tag-demo)
+
 
 ## Module based development
 
@@ -200,7 +201,7 @@ Move complex expressions to tag methods or tag properties.
 ```
 
 
-## Tag name as style scope
+## Use tag name as style scope
 
 Riot tag elements are custom elements which can very well be used as style scope root.
 Alternatively the module name can be used as CSS class namespace.
