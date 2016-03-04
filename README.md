@@ -23,6 +23,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
+* [Avoid `tag.parent`](#avoid-tagparent)
 * [Put styles in external files](#put-styles-in-external-files)
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
 * [Add a tag demo](#add-a-tag-demo)
@@ -201,6 +202,74 @@ Move complex expressions to tag methods or tag properties.
 </my-example>
 ```
 
+## Avoid `tag.parent`
+
+Riot supports [nested tags](http://riotjs.com/guide/#nested-tags) which have access to their parent context through `tag.parent`. Accessing context outside your tag module violates the [FIRST](https://addyosmani.com/first/) rule of [module based development](#module-based-development). Therefore you should **avoid using `tag.parent`**.
+
+The exception to this rule are anonymous child tags in a [for each loop](http://riotjs.com/guide/#loops) as they are defined directly inside the tag module.
+
+### Why?
+
+* A tag module, like any module, must work in isolation. If a tag needs to access its parent, this rule is broken.
+* If a tag needs access to its parent, it can no longer be reused in a different context. 
+* By accessing its parent a child tag can modify properties on its parent. This can lead to unexpected behaviour.
+
+### How?
+
+* Pass values from the parent to the child tag using attribute expressions.
+* Pass methods defined on the parent tag to the child tag using callbacks in attribute expressions.
+
+```html
+<!-- recommended -->
+<parent-tag>
+	<child-tag value="{ value }" /> <!-- pass parent value to child -->
+</parent-tag>
+
+<child-tag>
+	<span>{ opts.value }</span> <!-- use value passed by parent -->
+	<script></script>
+</child-tag>
+
+<!-- avoid -->
+<parent-tag>
+	<child-tag />
+</parent-tag>
+
+<child-tag>
+	<span>value: { parent.value }</span> <!-- don't do this -->
+</child-tag>
+```
+```html
+<!-- recommended -->
+<parent-tag>
+	<child-tag on-event="{ methodToCallOnEvent }" /> <!-- use method as callback -->
+	<script>this.methodToCallOnEvent = () => { /*...*/ };</script>
+<parent-tag>
+
+<child-tag>
+	<button onclick="{ opts.onEvent }"></button> <!-- call method passed by parent -->
+</child-tag>
+
+<!-- avoid -->
+<parent-tag>
+	<child-tag />
+	<script>this.methodToCallOnEvent = () => { /*...*/ };</script>
+<parent-tag>
+
+<child-tag>
+	<button onclick="{ parent.methodToCallOnEvent }"></button> <!-- don't do this -->
+</child-tag>
+```
+```html
+<!-- allowed exception -->
+<parent-tag>
+	<button each="{ item in items }"
+		onclick="{ parent.onEvent }"> <!-- okay, because button is not a riot tag -->
+		{ item.text }
+	</button>
+	<script>this.onEvent = (e) => { alert(e.item.text); }</script>
+</parent-tag>
+```
 
 ## Put styles in external files
 
