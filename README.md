@@ -217,10 +217,10 @@ For developer convenience, Riot allows you to define a tag element's style in a 
 
 Styles related to the tag and its markup, should be placed in a separate stylesheet file next to the tag file, inside its module directory:
 
-  my-example/
-    my-example.tag.html
-    my-example.(css|less|scss)    <-- external stylesheet next to tag file
-    ...
+    my-example/
+        my-example.tag.html
+        my-example.(css|less|scss)    <-- external stylesheet next to tag file
+        ...
 
 
 ## Use tag name as style scope
