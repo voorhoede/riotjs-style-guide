@@ -272,6 +272,39 @@ The exception to this rule are anonymous child tags in a [for each loop](http://
 </parent-tag>
 ```
 
+## Avoid anonymous loops
+
+Riot supports multiple notations for [loops](http://riotjs.com/guide/#loops): `each="{ item in items }"`, `each="{ key, value in items }"` and `each="{ items }"`. While the last notation is the shortest it can also lead to confusion. Therefore you should **avoid the anonymous loops notation**.
+
+### Why?
+
+...
+
+### How?
+
+Use `each="{ item in items }"` or `each="{ key, value in items }"` instead of `each="{ items }"` syntax:
+
+```html
+<!-- recommended: -->
+<ul>
+    <li each="{ item in items }">
+      	<label class="{ completed: item.done }">
+			<input type="checkbox" checked={ item.done }"> { item.title }
+      	</label>
+    </li>
+</ul>
+
+<!-- avoid: -->
+<ul>
+    <li each="{ items }">
+      	<label class="{ completed: done }">
+			<input type="checkbox" checked={ done }"> { title }
+      	</label>
+    </li>
+</ul>
+```
+
+
 ## Put styles in external files
 
 For developer convenience, Riot allows you to define a tag element's style in a [nested `<style>` tag](http://riotjs.com/guide/#tag-styling). While you can [scope](http://riotjs.com/guide/#scoped-css) these styles to the tag element, Riot does not provide true encapsulation. Instead Riot extracts these styles from the tags (JavaScript) and injects them into the document on runtime. Since Riot compiles nested styles to JavaScript and doesn't have true encapsulation, you should instead **put styles in external files**.
