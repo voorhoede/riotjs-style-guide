@@ -25,11 +25,16 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Assign `this` to `tag`](#assign-this-to-tag)
 * [Put tag properties and methods on top](#put-tag-properties-and-methods-on-top)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
+<<<<<<< HEAD
+* [Avoid fake ES6 syntax](#avoid-fake-es6-syntax)
+* [Tag name as style scope](#tag-name-as-style-scope)
+=======
 * [Keep tag options primitive](#keep-tag-options-primitive)
 * [Avoid `tag.parent`](#avoid-tagparent)
 * [Put styles in external files](#put-styles-in-external-files)
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
 * [Add a tag demo](#add-a-tag-demo)
+>>>>>>> master
 
 
 ## Module based development
@@ -313,6 +318,49 @@ Move complex expressions to tag methods or tag properties.
 ```
 
 
+<<<<<<< HEAD
+## Avoid fake ES6 syntax
+
+Riot supports a [shorthand *ES6 like* method syntax](http://riotjs.com/guide/#tag-syntax). Riot compiles the shorthand syntax `methodName() { }` into `this.methodName = function() {}.bind(this)`. Since this is non-standard you should **avoid fake ES6 method shorthand syntax**.
+
+### Why?
+
+* The fake ES6 shorthand syntax is non-standard and can therefore confuse developers.
+* The tag scripts are not actual ES6 classes, so IDEs won't be able to interpret the fake ES6 class method syntax.
+* It should always be clear which methods are bound to the tag and thus available in the markup. The shorthand syntax obscures the principle of writing code which is transparent and easy to understand.
+
+### How? 
+
+Use `tag.methodName =` instead of magic `methodName() { }` syntax:
+
+```javascript
+/* recommended */
+var tag = this;
+tag.todos = [];
+tag.add = add;
+
+function add() {
+	if (tag.text) {
+		tag.todos.push({ title: tag.text });
+		tag.text = tag.input.value = '';
+	}
+}
+
+/* avoid */
+todos = [];
+
+add() {
+	if (this.text) {
+		this.todos.push({ title: this.text });
+		this.text = this.input.value = '';
+	}
+}
+```
+
+
+
+## Tag name as style scope
+=======
 ## Keep tag options primitive
 
 Riot supports passing options to tag instances using attributes on tag elements. Inside the tag instance these options are available through `opts`. For example the value of `my-attr` on `<my-tag my-attr="{ value }" />` will be available inside `my-tag` via `opts.myAttr`. 
@@ -454,6 +502,7 @@ Styles related to the tag and its markup, should be placed in a separate stylesh
 
 
 ## Use tag name as style scope
+>>>>>>> master
 
 Riot tag elements are custom elements which can very well be used as style scope root.
 Alternatively the module name can be used as CSS class namespace.
