@@ -494,7 +494,6 @@ Styles related to the tag and its markup, should be placed in a separate stylesh
 
 
 ## Use tag name as style scope
->>>>>>> master
 
 Riot tag elements are custom elements which can very well be used as style scope root.
 Alternatively the module name can be used as CSS class namespace.
