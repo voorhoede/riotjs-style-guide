@@ -25,6 +25,10 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
 * [Keep tag options primitive](#keep-tag-options-primitive)
 * [Tag name as style scope](#tag-name-as-style-scope)
+* [Avoid `tag.parent`](#avoid-tagparent)
+* [Put styles in external files](#put-styles-in-external-files)
+* [Use tag name as style scope](#use-tag-name-as-style-scope)
+* [Add a tag demo](#add-a-tag-demo)
 
 
 ## Module based development
@@ -42,6 +46,7 @@ Small modules are easier to learn, understand, maintain, reuse and debug. Both b
 Each riot tag (like any module) must be [FIRST](https://addyosmani.com/first/): *Focused* ([single responsibility](http://en.wikipedia.org/wiki/Single_responsibility_principle)), *Independent*, *Reusable*, *Small* and *Testable*.
 
 If your module does too much or gets too big, split it up into smaller modules which each do just on thing.
+As a rule of thumb, try to keep each tag file less than 100 lines of code.
 Also ensure your tag module works in isolation. For instance by adding a stand-alone demo.
 
 
@@ -250,7 +255,98 @@ Use a tag attribute per option, with a primitive or function as value:
 ```
 
 
-## Tag name as style scope
+## Avoid `tag.parent`
+
+Riot supports [nested tags](http://riotjs.com/guide/#nested-tags) which have access to their parent context through `tag.parent`. Accessing context outside your tag module violates the [FIRST](https://addyosmani.com/first/) rule of [module based development](#module-based-development). Therefore you should **avoid using `tag.parent`**.
+
+The exception to this rule are anonymous child tags in a [for each loop](http://riotjs.com/guide/#loops) as they are defined directly inside the tag module.
+
+### Why?
+
+* A tag module, like any module, must work in isolation. If a tag needs to access its parent, this rule is broken.
+* If a tag needs access to its parent, it can no longer be reused in a different context. 
+* By accessing its parent a child tag can modify properties on its parent. This can lead to unexpected behaviour.
+
+### How?
+
+* Pass values from the parent to the child tag using attribute expressions.
+* Pass methods defined on the parent tag to the child tag using callbacks in attribute expressions.
+
+```html
+<!-- recommended -->
+<parent-tag>
+	<child-tag value="{ value }" /> <!-- pass parent value to child -->
+</parent-tag>
+
+<child-tag>
+	<span>{ opts.value }</span> <!-- use value passed by parent -->
+	<script></script>
+</child-tag>
+
+<!-- avoid -->
+<parent-tag>
+	<child-tag />
+</parent-tag>
+
+<child-tag>
+	<span>value: { parent.value }</span> <!-- don't do this -->
+</child-tag>
+```
+```html
+<!-- recommended -->
+<parent-tag>
+	<child-tag on-event="{ methodToCallOnEvent }" /> <!-- use method as callback -->
+	<script>this.methodToCallOnEvent = () => { /*...*/ };</script>
+<parent-tag>
+
+<child-tag>
+	<button onclick="{ opts.onEvent }"></button> <!-- call method passed by parent -->
+</child-tag>
+
+<!-- avoid -->
+<parent-tag>
+	<child-tag />
+	<script>this.methodToCallOnEvent = () => { /*...*/ };</script>
+<parent-tag>
+
+<child-tag>
+	<button onclick="{ parent.methodToCallOnEvent }"></button> <!-- don't do this -->
+</child-tag>
+```
+```html
+<!-- allowed exception -->
+<parent-tag>
+	<button each="{ item in items }"
+		onclick="{ parent.onEvent }"> <!-- okay, because button is not a riot tag -->
+		{ item.text }
+	</button>
+	<script>this.onEvent = (e) => { alert(e.item.text); }</script>
+</parent-tag>
+```
+
+
+## Put styles in external files
+
+For developer convenience, Riot allows you to define a tag element's style in a [nested `<style>` tag](http://riotjs.com/guide/#tag-styling). While you can [scope](http://riotjs.com/guide/#scoped-css) these styles to the tag element, Riot does not provide true encapsulation. Instead Riot extracts these styles from the tags (JavaScript) and injects them into the document on runtime. Since Riot compiles nested styles to JavaScript and doesn't have true encapsulation, you should instead **put styles in external files**.
+
+### Why?
+
+* External stylesheets can be handled by the browser independently of Riot and tag files. This means styles can be applied to initial markup even if JavaScript errors occur or isn't loaded (yet).
+* External stylesheets can be used in combination with pre-processors (Less, Sass, PostCSS, etc) and your own (existing) build tools.
+* External stylesheets can be minified, served and cached separately. This improves performance.
+* Riot expressions are not supported in nested `<style>`s so there's no added benefit in using them.
+
+### How?
+
+Styles related to the tag and its markup, should be placed in a separate stylesheet file next to the tag file, inside its module directory:
+
+    my-example/
+        my-example.tag.html
+        my-example.(css|less|scss)    <-- external stylesheet next to tag file
+        ...
+
+
+## Use tag name as style scope
 
 Riot tag elements are custom elements which can very well be used as style scope root.
 Alternatively the module name can be used as CSS class namespace.
@@ -274,3 +370,72 @@ my-example li { }
 .my-alternative { } /* not scoped to tag or module name */
 .my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
 ```
+
+
+## Add a tag demo
+
+Add a `*.demo.html` file with demos of the tag with different configurations, showing how the tag can be used.
+
+### Why?
+
+* A tag demo proofs the module works in isolation.
+* A tag demo gives developers a preview before having to dig into the documentation or code.
+* Demos can illustrate all the possible configurations and variations a tag can be used in. 
+
+### How?
+
+Add a `*.demo.html` file to your module directory:
+
+	modules/
+		city-map/
+			city-map.tag.html
+			city-map.demo.html
+			city-map.css
+			...
+
+Inside the demo file:
+
+* Include `riot+compiler.min.js` to also compile during runtime.
+* Include the tag file (e.g. `./city-map.tag.html`).
+* Create a `demo` tag (`<yield/>`) to embed your demos in (otherwise option attributes are not supported).
+* Write demos inside the `<demo>` tags.
+* As a bonus add `aria-label`s to the `<demo>` tags and style those as title bars.
+* Initialise using `riot.mount('demo', {})`.
+
+Example demo file in `city-tag` module:
+
+```html
+<!-- modules/city-map/city-map.demo.html: -->
+<body>
+    <h1>city-map demos</h1>
+    
+    <demo aria-label="City map of London">
+        <city-map location="London" />    
+    </demo>
+    
+    <demo aria-label="City map of Paris">
+        <city-map location="Paris" />    
+    </demo>
+    
+    <link rel="stylesheet" href="./city-map.css">
+    
+    <script src="path/to/riot+compiler.min.js"></script>
+    <script type="riot/tag" src="./city-map.tag.html"></script> 
+    <script>
+        riot.tag('demo','<yield/>');
+        riot.mount('demo', {});
+    </script>
+    
+    <style>
+    	/* add a grey bar with the `aria-label` as demo title */
+    	demo:before {
+        	content: "Demo: " attr(aria-label);
+	        display: block;
+        	background: #F3F5F5;
+        	padding: .5em;
+        	clear: both;
+        }
+    </style>
+</body>
+```
+Note: this is a working concept, but could be much cleaner using build scripts.

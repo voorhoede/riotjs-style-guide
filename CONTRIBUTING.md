@@ -36,20 +36,21 @@ Describe **how** (and how not) to apply the rule.
 ```markdown
 ### How?
 
-If an expression becomes complex, move it to a tag property of method.
+If an expression becomes complex, move it to a tag property or method.
 ```
 
 When using code snippets:
-* use <code>```javascript</code> for improved syntax highlighting.
-* use `/* recommended */` or `/* avoid */` at the start of the snippet to indicate if it's a good or bad practice.
+* use <code>```html</code> for improved syntax highlighting of Riot tag elements. 
+* use <code>```javascript</code> for improved syntax highlighting when script only.
+* use `<!-- recommended -->` and `/* recommended */` or `<!-- avoid -->` and `/* avoid */` at the start of the snippet to indicate if it's a good or bad practice.
 
 For example:
 
-```javascript
-/* recommended */
+```html
+<!-- recommended -->
 <datetime>{ this.timestamp() }</datetime>
 
-/* avoid */
+<!-- avoid -->
 <datetime>
     { ((new Date()).getUTCMonth()+1) + ' ' + (new Date()).getUTCFullYear() }
 </datetime>
