@@ -55,3 +55,9 @@ For example:
     { ((new Date()).getUTCMonth()+1) + ' ' + (new Date()).getUTCFullYear() }
 </datetime>
 ```
+
+Add a [↑ back to Table of Contents](README.md#table-of-contents) link at the end of each rule, so the reader can easily navigate back:
+
+```markdown
+[↑ back to Table of Contents](#table-of-contents)
+```
