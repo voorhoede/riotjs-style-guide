@@ -52,6 +52,8 @@ If your module does too much or gets too big, split it up into smaller modules w
 As a rule of thumb, try to keep each tag file less than 100 lines of code.
 Also ensure your tag module works in isolation. For instance by adding a stand-alone demo.
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Tag module names
 
@@ -87,6 +89,8 @@ Tag module names must also be:
 <slider /> <!-- not custom element spec compliant -->
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## 1 module = 1 directory
 
@@ -120,6 +124,8 @@ For example a generic `radio-group` module may be placed directly inside "module
             search-filters/
                search-filters.tag.html
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Use `*.tag.html` extension
 
@@ -142,6 +148,8 @@ In case of [pre-compilation](http://riotjs.com/guide/compiler/#pre-compilation),
 ```bash
 riot --ext tag.html modules/ dist/tags.js
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Use `<script>` inside tag
@@ -174,6 +182,8 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 	this.year = (new Date()).getUTCFullYear();
 </my-example>
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Assign `this` to `tag`
@@ -211,6 +221,8 @@ var self = this;
 var _this = this;
 // etc
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Put tag properties and methods on top
@@ -281,6 +293,8 @@ tag.on('update', onUpdate);
 // etc
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Avoid fake ES6 syntax
 
@@ -320,6 +334,8 @@ add() {
 }
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Keep tag expressions simple
 
@@ -352,6 +368,8 @@ Move complex expressions to tag methods or tag properties.
 	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
 </my-example>
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Keep tag options primitive
@@ -401,6 +419,8 @@ Use a tag attribute per option, with a primitive or function as value:
 	</ul>
 </menu-item>
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Avoid `tag.parent`
@@ -472,6 +492,8 @@ The exception to this rule are anonymous child tags in a [for each loop](http://
 </parent-tag>
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Put styles in external files
 
@@ -492,6 +514,8 @@ Styles related to the tag and its markup, should be placed in a separate stylesh
         my-example.tag.html
         my-example.(css|less|scss)    <-- external stylesheet next to tag file
         ...
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Use tag name as style scope
@@ -518,6 +542,8 @@ my-example li { }
 .my-alternative { } /* not scoped to tag or module name */
 .my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Document your tag API
@@ -566,6 +592,8 @@ This module uses the [noUiSlider](http://refreshless.com/nouislider/) for cross 
 
 For customising the slider appearance see the [Styling section in the noUiSlider docs](http://refreshless.com/nouislider/more/#section-styling).
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Add a tag demo
@@ -635,3 +663,5 @@ Example demo file in `city-tag` module:
 </body>
 ```
 Note: this is a working concept, but could be much cleaner using build scripts.
+
+[↑ back to Table of Contents](#table-of-contents)
