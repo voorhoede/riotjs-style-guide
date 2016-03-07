@@ -30,6 +30,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Avoid `tag.parent`](#avoid-tagparent)
 * [Put styles in external files](#put-styles-in-external-files)
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
+* [Document your tag API](#document-your-tag-api)
 * [Add a tag demo](#add-a-tag-demo)
 
 
@@ -516,6 +517,54 @@ my-example li { }
 /* avoid */
 .my-alternative { } /* not scoped to tag or module name */
 .my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
+```
+
+
+## Document your tag API
+
+A Riot tag instance is created by using the tag element inside your application. The instance is configured through its custom attributes. For the tag to be used by other developers, these custom attributes - the tag's API - should be documented in a `README.md` file.
+
+### Why?
+
+* Documentation provides developers with a high level overview to a module, without the need to go through all its code. This makes a module more accessible and easier to use.
+* A tag's API is the set of custom attributes through which its configured. Therefore these are especially of interest to other developers which only want to consume (and not develop) the tag.
+* Documentation formalises the API and tells developers which functionality to keep backwards compatible when modifying the tag's code.
+* `README.md` is the de facto standard filename for documentation to be read first. Code repository hosting services (Github, Bitbucket, Gitlab etc) display the contents of the the README's, directly when browsing through source directories. This applies to our module directories as well.
+  
+### How?
+
+Add a `README.md` file to the tag's module directory:
+
+	range-slider/
+		range-slider.tag.html
+		range-slider.less
+		README.md
+		
+Within the README file, describe the functionality and the usage of the module. For a tag module its most useful to describe the custom attributes it supports as those are its API:
+
+```markdown
+# Range slider
+
+## Functionality
+
+The range slider lets the user to set a numeric range by dragging a handle on a slider rail for both the start and end value.
+
+This module uses the [noUiSlider](http://refreshless.com/nouislider/) for cross browser and touch support.
+
+## Usage
+
+`<range-slider>` supports the following custom tag attributes:
+
+| attribute | type | description
+| --- | --- | ---
+| `min` | Number | number where range starts (lower limit).
+| `max` | Number | Number where range ends (upper limit).
+| `values` | Number[] *optional* | Array containing start and end value.  E.g. `values="[10, 20]"`. Defaults to `[opts.min, opts.max]`.
+| `step` | Number *optional* | Number to increment / decrement values by. Defaults to 1.
+| `on-slide` | Function *optional* | Function called with `(values, HANDLE)` while a user drags the start (`HANDLE == 0`) or end (`HANDLE == 1`) handle. E.g. `on-slide={ updateInputs }`, with `tag.updateInputs = (values, HANDLE) => { const value = values[HANDLE]; }`.
+| `on-end` | Function *optional* | Function called with `(values, HANDLE)` when user stops dragging a handle.
+
+For customising the slider appearance see the [Styling section in the noUiSlider docs](http://refreshless.com/nouislider/more/#section-styling).
 ```
 
 
