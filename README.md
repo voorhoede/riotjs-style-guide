@@ -24,6 +24,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
 * [Avoid `tag.parent`](#avoid-tagparent)
+* [Avoid anonymous loops](#avoid-anonymous-loops)
 * [Put styles in external files](#put-styles-in-external-files)
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
 * [Add a tag demo](#add-a-tag-demo)
@@ -274,11 +275,11 @@ The exception to this rule are anonymous child tags in a [for each loop](http://
 
 ## Avoid anonymous loops
 
-Riot supports multiple notations for [loops](http://riotjs.com/guide/#loops): `each="{ item in items }"`, `each="{ key, value in items }"` and `each="{ items }"`. While the last notation is the shortest it can also lead to confusion. Therefore you should **avoid the anonymous loops notation**.
+Riot supports multiple notations for [loops](http://riotjs.com/guide/#loops): item in array (`each="{ item in items }"`); key, value in object (`each="{ key, value in items }"`) and anonymous loop (`each="{ items }"`) notation. While the last notation is the shortest it can also lead to confusion. Therefore you should **avoid anonymous loops**.
 
 ### Why?
 
-...
+Riot creates a new tag instance for each item the `each` directive loops through. When using the anonymous loop notation, the methods and properties of the current item are bound to the current tag instance (local `this`). This is not obvious when looking at the markup and may thus confuse other developers. Therefore you should **avoid anonymous loops**.
 
 ### How?
 
@@ -289,7 +290,7 @@ Use `each="{ item in items }"` or `each="{ key, value in items }"` instead of `e
 <ul>
     <li each="{ item in items }">
       	<label class="{ completed: item.done }">
-			<input type="checkbox" checked={ item.done }"> { item.title }
+			<input type="checkbox" checked="{ item.done }"> { item.title }
       	</label>
     </li>
 </ul>
@@ -298,7 +299,7 @@ Use `each="{ item in items }"` or `each="{ key, value in items }"` instead of `e
 <ul>
     <li each="{ items }">
       	<label class="{ completed: done }">
-			<input type="checkbox" checked={ done }"> { title }
+			<input type="checkbox" checked="{ done }"> { title }
       	</label>
     </li>
 </ul>
