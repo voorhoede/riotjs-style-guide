@@ -32,7 +32,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
 * [Document your tag API](#document-your-tag-api)
 * [Add a tag demo](#add-a-tag-demo)
-
+* [More Resources](#more-resources)
 
 ## Module based development
 
@@ -672,5 +672,15 @@ Example demo file in `city-tag` module:
 </body>
 ```
 Note: this is a working concept, but could be much cleaner using build scripts.
+
+[↑ back to Table of Contents](#table-of-contents)
+
+## More Resources
+
+For more information, take a look at these other resources:
+
+* [RiotJS Guide](http://riotjs.com/guide/) on riotjs.com
+* [RiotJS API](http://riotjs.com/api/) on riotjs.com
+* [Learning RiotJS](https://egghead.io/playlists/learning-riotjs) video series on egghead.io
 
 [↑ back to Table of Contents](#table-of-contents)
