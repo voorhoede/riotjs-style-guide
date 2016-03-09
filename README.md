@@ -101,24 +101,28 @@ Bundling module files (Riot tags, tests, assets, docs, etc.) makes them easy to 
 Use the module name as directory name and file basename.
 The file extension depends on the purpose of the file.
 
-	modules/
-		my-example/
-			my-example.tag.html
-			my-example.less
-			...
-			README.md
+```
+modules/
+`--	my-example/
+    |-- my-example.tag.html
+	|--	my-example.less
+	|--	...
+	`--	README.md
+```
 
 If your project uses nested structures, you can nest a module within a module.
 For example a generic `radio-group` module may be placed directly inside "modules/". While `search-filters` may only make sense inside a `search-form` and may therefore be nested:
 
-    modules/
-        radio-group/
-            radio-group.tag.html
-        search-form/
-            search-form.tag.html
-            ...
-            search-filters/
-               search-filters.tag.html
+```
+modules/
+|--	radio-group/
+|   `-- radio-group.tag.html
+`--	search-form/
+    |-- search-form.tag.html
+    |-- ...
+    `-- search-filters/
+        `-- search-filters.tag.html
+```            
 
 
 ## Use `*.tag.html` extension
@@ -488,11 +492,12 @@ For developer convenience, Riot allows you to define a tag element's style in a 
 
 Styles related to the tag and its markup, should be placed in a separate stylesheet file next to the tag file, inside its module directory:
 
-    my-example/
-        my-example.tag.html
-        my-example.(css|less|scss)    <-- external stylesheet next to tag file
-        ...
-
+```
+my-example/
+|-- my-example.tag.html
+|-- my-example.(css|less|scss)    <-- external stylesheet next to tag file
+`-- ...
+```
 
 ## Use tag name as style scope
 
@@ -535,11 +540,13 @@ A Riot tag instance is created by using the tag element inside your application.
 
 Add a `README.md` file to the tag's module directory:
 
-	range-slider/
-		range-slider.tag.html
-		range-slider.less
-		README.md
-		
+```
+range-slider/
+|-- range-slider.tag.html
+|--	range-slider.less
+`--	README.md
+```
+	
 Within the README file, describe the functionality and the usage of the module. For a tag module its most useful to describe the custom attributes it supports as those are its API:
 
 ```markdown
@@ -582,12 +589,13 @@ Add a `*.demo.html` file with demos of the tag with different configurations, sh
 
 Add a `*.demo.html` file to your module directory:
 
-	modules/
-		city-map/
-			city-map.tag.html
-			city-map.demo.html
-			city-map.css
-			...
+```
+city-map/
+|--	city-map.tag.html
+|--	city-map.demo.html
+|--	city-map.css
+`--	...
+```
 
 Inside the demo file:
 
