@@ -22,11 +22,11 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [1 module = 1 directory](#1-module--1-directory)
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
+* [Keep tag expressions simple](#keep-tag-expressions-simple)
+* [Keep tag options primitive](#keep-tag-options-primitive)
 * [Assign `this` to `tag`](#assign-this-to-tag)
 * [Put tag properties and methods on top](#put-tag-properties-and-methods-on-top)
 * [Avoid fake ES6 syntax](#avoid-fake-es6-syntax)
-* [Keep tag expressions simple](#keep-tag-expressions-simple)
-* [Keep tag options primitive](#keep-tag-options-primitive)
 * [Avoid `tag.parent`](#avoid-tagparent)
 * [Put styles in external files](#put-styles-in-external-files)
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
@@ -105,24 +105,28 @@ Bundling module files (Riot tags, tests, assets, docs, etc.) makes them easy to 
 Use the module name as directory name and file basename.
 The file extension depends on the purpose of the file.
 
-	modules/
-		my-example/
-			my-example.tag.html
-			my-example.less
-			...
-			README.md
+```
+modules/
+`--	my-example/
+    |-- my-example.tag.html
+	|--	my-example.less
+	|--	...
+	`--	README.md
+```
 
 If your project uses nested structures, you can nest a module within a module.
 For example a generic `radio-group` module may be placed directly inside "modules/". While `search-filters` may only make sense inside a `search-form` and may therefore be nested:
 
-    modules/
-        radio-group/
-            radio-group.tag.html
-        search-form/
-            search-form.tag.html
-            ...
-            search-filters/
-               search-filters.tag.html
+```
+modules/
+|--	radio-group/
+|   `-- radio-group.tag.html
+`--	search-form/
+    |-- search-form.tag.html
+    |-- ...
+    `-- search-filters/
+        `-- search-filters.tag.html
+```            
 
 [↑ back to Table of Contents](#table-of-contents)
 
@@ -181,6 +185,92 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 	
 	this.year = (new Date()).getUTCFullYear();
 </my-example>
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Keep tag expressions simple
+
+Riot's inline [expressions](http://riotjs.com/guide/#expressions) are 100% Javascript. This makes them extemely powerful, but potentially also very complex. Therefore you should **keep tag expressions simple**.
+
+### Why?
+
+* Complex inline expressions are hard to read.
+* Inline expressions can't be reused elsewehere. This can lead to code duplication and code rot.
+* IDEs typically don't have support for expression syntax, so your IDE can't autocomplete or validate.
+
+### How?
+
+Move complex expressions to tag methods or tag properties. 
+
+```html
+<!-- recommended -->
+<my-example>
+	{ year() + '-' + month() }
+	
+	<script>
+		const twoDigits = (num) => ('0' + num).slice(-2);
+		this.month = () => twoDigits((new Date()).getUTCMonth() +1);
+		this.year  = () => (new Date()).getUTCFullYear();
+	</script>
+</my-example>
+
+<!-- avoid -->
+<my-example>
+	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
+</my-example>
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Keep tag options primitive
+
+Riot supports passing options to tag instances using attributes on tag elements. Inside the tag instance these options are available through `opts`. For example the value of `my-attr` on `<my-tag my-attr="{ value }" />` will be available inside `my-tag` via `opts.myAttr`. 
+
+While Riot supports passing complex JavaScript objects via these attributes, you should try to **keep the tag options as primitive as possible**. Try to only use [JavaScript primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive) (strings, numbers, booleans) and functions. Avoid complex objects.
+
+Exceptions to this rule are situations which can only be solved using objects (eg. collections or recursive tags) or well-known objects inside your app (eg. a product in a web shop).
+
+### Why?
+
+* By using an attribute for each option separately the tag has a clear and expressive API.
+* By using only primitives and functions as option values our tag APIs are similar to the APIs of native HTML(5) elements. Which makes our custom elements directly familiar.
+* By using an attribute for each option, other developers can easily understand what is passed to the tag instance.
+* When passing complex objects it's not apparent which properties and methods of the objects are actually being used by the custom tags. This makes it hard to refactor code and can lead to code rot.
+
+### How?
+
+Use a tag attribute per option, with a primitive or function as value:
+
+```html
+<!-- recommended -->
+<range-slider
+	values="[10, 20]"
+	min="0"
+	max="100"
+	step="5"
+	on-slide="{ updateInputs }"
+	on-end="{ updateResults }"
+	/>
+	
+<!-- avoid -->
+<range-slider config="{ complexConfigObject }">
+```
+```html
+<!-- exception: recursive tag, like menu item -->
+<menu-item>
+	<a href="{ opts.url }">{ opts.text }</a>
+	<ul if="{ opts.items }">
+		<li each="{ item in opts.items }">
+			<menu-item 
+				text="{ item.text }" 
+				url="{ item.url }" 
+				items="{ item.items }" />
+		</li>
+	</ul>
+</menu-item>
 ```
 
 [↑ back to Table of Contents](#table-of-contents)
@@ -337,92 +427,6 @@ add() {
 [↑ back to Table of Contents](#table-of-contents)
 
 
-## Keep tag expressions simple
-
-Riot's inline [expressions](http://riotjs.com/guide/#expressions) are 100% Javascript. This makes them extemely powerful, but potentially also very complex. Therefore you should **keep tag expressions simple**.
-
-### Why?
-
-* Complex inline expressions are hard to read.
-* Inline expressions can't be reused elsewehere. This can lead to code duplication and code rot.
-* IDEs typically don't have support for expression syntax, so your IDE can't autocomplete or validate.
-
-### How?
-
-Move complex expressions to tag methods or tag properties. 
-
-```html
-<!-- recommended -->
-<my-example>
-	{ year() + '-' + month() }
-	
-	<script>
-		const twoDigits = (num) => ('0' + num).slice(-2);
-		this.month = () => twoDigits((new Date()).getUTCMonth() +1);
-		this.year  = () => (new Date()).getUTCFullYear();
-	</script>
-</my-example>
-
-<!-- avoid -->
-<my-example>
-	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
-</my-example>
-```
-
-[↑ back to Table of Contents](#table-of-contents)
-
-
-## Keep tag options primitive
-
-Riot supports passing options to tag instances using attributes on tag elements. Inside the tag instance these options are available through `opts`. For example the value of `my-attr` on `<my-tag my-attr="{ value }" />` will be available inside `my-tag` via `opts.myAttr`. 
-
-While Riot supports passing complex JavaScript objects via these attributes, you should try to **keep the tag options as primitive as possible**. Try to only use [JavaScript primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive) (strings, numbers, booleans) and functions. Avoid complex objects.
-
-Exceptions to this rule are situations which can only be solved using objects (eg. collections or recursive tags) or well-known objects inside your app (eg. a product in a web shop).
-
-### Why?
-
-* By using an attribute for each option separately the tag has a clear and expressive API.
-* By using only primitives and functions as option values our tag APIs are similar to the APIs of native HTML(5) elements. Which makes our custom elements directly familiar.
-* By using an attribute for each option, other developers can easily understand what is passed to the tag instance.
-* When passing complex objects it's not apparent which properties and methods of the objects are actually being used by the custom tags. This makes it hard to refactor code and can lead to code rot.
-
-### How?
-
-Use a tag attribute per option, with a primitive or function as value:
-
-```html
-<!-- recommended -->
-<range-slider
-	values="[10, 20]"
-	min="0"
-	max="100"
-	step="5"
-	on-slide="{ updateInputs }"
-	on-end="{ updateResults }"
-	/>
-	
-<!-- avoid -->
-<range-slider config="{ complexConfigObject }">
-```
-```html
-<!-- exception: recursive tag, like menu item -->
-<menu-item>
-	<a href="{ opts.url }">{ opts.text }</a>
-	<ul if="{ opts.items }">
-		<li each="{ item in opts.items }">
-			<menu-item 
-				text="{ item.text }" 
-				url="{ item.url }" 
-				items="{ item.items }" />
-		</li>
-	</ul>
-</menu-item>
-```
-
-[↑ back to Table of Contents](#table-of-contents)
-
-
 ## Avoid `tag.parent`
 
 Riot supports [nested tags](http://riotjs.com/guide/#nested-tags) which have access to their parent context through `tag.parent`. Accessing context outside your tag module violates the [FIRST](https://addyosmani.com/first/) rule of [module based development](#module-based-development). Therefore you should **avoid using `tag.parent`**.
@@ -510,10 +514,12 @@ For developer convenience, Riot allows you to define a tag element's style in a 
 
 Styles related to the tag and its markup, should be placed in a separate stylesheet file next to the tag file, inside its module directory:
 
-    my-example/
-        my-example.tag.html
-        my-example.(css|less|scss)    <-- external stylesheet next to tag file
-        ...
+```
+my-example/
+|-- my-example.tag.html
+|-- my-example.(css|less|scss)    <-- external stylesheet next to tag file
+`-- ...
+```
 
 [↑ back to Table of Contents](#table-of-contents)
 
@@ -561,11 +567,13 @@ A Riot tag instance is created by using the tag element inside your application.
 
 Add a `README.md` file to the tag's module directory:
 
-	range-slider/
-		range-slider.tag.html
-		range-slider.less
-		README.md
-		
+```
+range-slider/
+|-- range-slider.tag.html
+|--	range-slider.less
+`--	README.md
+```
+	
 Within the README file, describe the functionality and the usage of the module. For a tag module its most useful to describe the custom attributes it supports as those are its API:
 
 ```markdown
@@ -602,7 +610,7 @@ Add a `*.demo.html` file with demos of the tag with different configurations, sh
 
 ### Why?
 
-* A tag demo proofs the module works in isolation.
+* A tag demo proves the module works in isolation.
 * A tag demo gives developers a preview before having to dig into the documentation or code.
 * Demos can illustrate all the possible configurations and variations a tag can be used in. 
 
@@ -610,12 +618,13 @@ Add a `*.demo.html` file with demos of the tag with different configurations, sh
 
 Add a `*.demo.html` file to your module directory:
 
-	modules/
-		city-map/
-			city-map.tag.html
-			city-map.demo.html
-			city-map.css
-			...
+```
+city-map/
+|--	city-map.tag.html
+|--	city-map.demo.html
+|--	city-map.css
+`--	...
+```
 
 Inside the demo file:
 
