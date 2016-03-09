@@ -23,10 +23,15 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `*.tag.html` extension](#use-taghtml-extension)
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
+* [Keep tag options primitive](#keep-tag-options-primitive)
+* [Assign `this` to `tag`](#assign-this-to-tag)
+* [Put tag properties and methods on top](#put-tag-properties-and-methods-on-top)
+* [Avoid fake ES6 syntax](#avoid-fake-es6-syntax)
 * [Avoid `tag.parent`](#avoid-tagparent)
 * [Avoid anonymous loops](#avoid-anonymous-loops)
 * [Put styles in external files](#put-styles-in-external-files)
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
+* [Document your tag API](#document-your-tag-api)
 * [Add a tag demo](#add-a-tag-demo)
 
 
@@ -47,6 +52,8 @@ Each riot tag (like any module) must be [FIRST](https://addyosmani.com/first/): 
 If your module does too much or gets too big, split it up into smaller modules which each do just on thing.
 As a rule of thumb, try to keep each tag file less than 100 lines of code.
 Also ensure your tag module works in isolation. For instance by adding a stand-alone demo.
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Tag module names
@@ -83,6 +90,8 @@ Tag module names must also be:
 <slider /> <!-- not custom element spec compliant -->
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## 1 module = 1 directory
 
@@ -97,24 +106,30 @@ Bundling module files (Riot tags, tests, assets, docs, etc.) makes them easy to 
 Use the module name as directory name and file basename.
 The file extension depends on the purpose of the file.
 
-	modules/
-		my-example/
-			my-example.tag.html
-			my-example.less
-			...
-			README.md
+```
+modules/
+`--	my-example/
+    |-- my-example.tag.html
+	|--	my-example.less
+	|--	...
+	`--	README.md
+```
 
 If your project uses nested structures, you can nest a module within a module.
 For example a generic `radio-group` module may be placed directly inside "modules/". While `search-filters` may only make sense inside a `search-form` and may therefore be nested:
 
-    modules/
-        radio-group/
-            radio-group.tag.html
-        search-form/
-            search-form.tag.html
-            ...
-            search-filters/
-               search-filters.tag.html
+```
+modules/
+|--	radio-group/
+|   `-- radio-group.tag.html
+`--	search-form/
+    |-- search-form.tag.html
+    |-- ...
+    `-- search-filters/
+        `-- search-filters.tag.html
+```            
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Use `*.tag.html` extension
@@ -138,6 +153,8 @@ In case of [pre-compilation](http://riotjs.com/guide/compiler/#pre-compilation),
 ```bash
 riot --ext tag.html modules/ dist/tags.js
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Use `<script>` inside tag
@@ -171,6 +188,8 @@ you should **always use `<script>`** around scripting. This is closer to web sta
 </my-example>
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Keep tag expressions simple
 
@@ -203,6 +222,211 @@ Move complex expressions to tag methods or tag properties.
 	{ (new Date()).getUTCFullYear() + '-' + ('0' + ((new Date()).getUTCMonth()+1)).slice(-2) }
 </my-example>
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Keep tag options primitive
+
+Riot supports passing options to tag instances using attributes on tag elements. Inside the tag instance these options are available through `opts`. For example the value of `my-attr` on `<my-tag my-attr="{ value }" />` will be available inside `my-tag` via `opts.myAttr`. 
+
+While Riot supports passing complex JavaScript objects via these attributes, you should try to **keep the tag options as primitive as possible**. Try to only use [JavaScript primitives](https://developer.mozilla.org/en-US/docs/Glossary/Primitive) (strings, numbers, booleans) and functions. Avoid complex objects.
+
+Exceptions to this rule are situations which can only be solved using objects (eg. collections or recursive tags) or well-known objects inside your app (eg. a product in a web shop).
+
+### Why?
+
+* By using an attribute for each option separately the tag has a clear and expressive API.
+* By using only primitives and functions as option values our tag APIs are similar to the APIs of native HTML(5) elements. Which makes our custom elements directly familiar.
+* By using an attribute for each option, other developers can easily understand what is passed to the tag instance.
+* When passing complex objects it's not apparent which properties and methods of the objects are actually being used by the custom tags. This makes it hard to refactor code and can lead to code rot.
+
+### How?
+
+Use a tag attribute per option, with a primitive or function as value:
+
+```html
+<!-- recommended -->
+<range-slider
+	values="[10, 20]"
+	min="0"
+	max="100"
+	step="5"
+	on-slide="{ updateInputs }"
+	on-end="{ updateResults }"
+	/>
+	
+<!-- avoid -->
+<range-slider config="{ complexConfigObject }">
+```
+```html
+<!-- exception: recursive tag, like menu item -->
+<menu-item>
+	<a href="{ opts.url }">{ opts.text }</a>
+	<ul if="{ opts.items }">
+		<li each="{ item in opts.items }">
+			<menu-item 
+				text="{ item.text }" 
+				url="{ item.url }" 
+				items="{ item.items }" />
+		</li>
+	</ul>
+</menu-item>
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Assign `this` to `tag`
+
+Within the context of a Riot tag element, `this` is bound to the [tag instance](http://riotjs.com/api/#tag-instance).
+Therefore when you need to reference it in a different context, ensure `this` is available as `tag`.
+
+### Why?
+
+* By assigning `this` to a variable named `tag` the variable tells developers it's bound to the [tag instance](http://riotjs.com/api/#tag-instance) wherever it's used.
+
+### How?
+
+```javascript
+/* recommended */
+// ES5: assign `this` to `tag` variable
+var tag = this;
+window.onresize = function() { 
+    tag.adjust();
+}
+
+// ES6: assign `this` to `tag` constant
+const tag = this;
+window.onresize = function() { 
+    tag.adjust();
+}
+
+// ES6: you can still use `this` with fat arrows
+window.onresize = () => {
+    this.adjust();
+}
+
+/* avoid */
+var self = this;
+var _this = this;
+// etc
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Put tag properties and methods on top
+
+Inside a Riot tag element you typically put its markup first, followed by its script.
+Properties and methods bound to the tag (`this`) in the script are directly available in the markup. You should put those tag properties and methods alphabetized at the top of the script. Tag methods longer than a one-liner should be linked to separate functions later in the script.
+
+### Why?
+
+* Placing the tag properties and methods at the top of the script allows you to instantly identify which parts of the tag can be used in the markup.
+* Alphabetizing the properties and methods makes them easy to find.
+* By keeping each tag method or property declaration a one-liner you can get a full overview of the tag at a glance.
+* By moving the full functions behind the tag methods down, you initially hide implementation details.
+
+### How?
+
+Put tag properties and methods on top:
+
+```javascript
+/* recommended: alphabetized properties then methods */
+var tag = this;
+tag.text = '';
+tag.todos = [];
+tag.add = add;
+tag.edit = edit;
+tag.toggle = toggle;
+
+function add(event) {
+    /* ... */
+}
+
+function edit(event) {
+    /* ... */
+}
+
+function toggle(event) {
+    /* ... */
+}   
+
+/* avoid: don't spread out tag properties and methods over script */
+var tag = this;
+
+tag.todos = [];
+tag.add = function(event) {
+    /* ... */
+}
+
+tag.text = '';
+tag.edit = function(event) {
+    /* ... */
+}
+
+tag.toggle = function(event) {
+    /* ... */
+}
+```
+    
+Also put mixins and observables up top:
+
+```javascript
+/* recommended */
+var tag = this;
+// alphabetized properties
+// alphabetized methods
+tag.mixin('someBehaviour');
+tag.on('mount', onMount);
+tag.on('update', onUpdate);
+// etc
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Avoid fake ES6 syntax
+
+Riot supports a [shorthand *ES6 like* method syntax](http://riotjs.com/guide/#tag-syntax). Riot compiles the shorthand syntax `methodName() { }` into `this.methodName = function() {}.bind(this)`. Since this is non-standard you should **avoid fake ES6 method shorthand syntax**.
+
+### Why?
+
+* The fake ES6 shorthand syntax is non-standard and can therefore confuse developers.
+* The tag scripts are not actual ES6 classes, so IDEs won't be able to interpret the fake ES6 class method syntax.
+* It should always be clear which methods are bound to the tag and thus available in the markup. The shorthand syntax obscures the principle of writing code which is transparent and easy to understand.
+
+### How? 
+
+Use `tag.methodName =` instead of magic `methodName() { }` syntax:
+
+```javascript
+/* recommended */
+var tag = this;
+tag.todos = [];
+tag.add = add;
+
+function add() {
+    if (tag.text) {
+        tag.todos.push({ title: tag.text });
+        tag.text = tag.input.value = '';
+    }
+}
+
+/* avoid */
+todos = [];
+
+add() {
+    if (this.text) {
+        this.todos.push({ title: this.text });
+        this.text = this.input.value = '';
+    }
+}
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Avoid `tag.parent`
 
@@ -273,6 +497,9 @@ The exception to this rule are anonymous child tags in a [for each loop](http://
 </parent-tag>
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
+
 ## Avoid anonymous loops
 
 Riot supports multiple notations for [loops](http://riotjs.com/guide/#loops): item in array (`each="{ item in items }"`); key, value in object (`each="{ key, value in items }"`) and anonymous loop (`each="{ items }"`) notation. While the last notation is the shortest it can also lead to confusion. Therefore you should **avoid anonymous loops**.
@@ -305,6 +532,8 @@ Use `each="{ item in items }"` or `each="{ key, value in items }"` instead of `e
 </ul>
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
+
 
 ## Put styles in external files
 
@@ -321,10 +550,14 @@ For developer convenience, Riot allows you to define a tag element's style in a 
 
 Styles related to the tag and its markup, should be placed in a separate stylesheet file next to the tag file, inside its module directory:
 
-    my-example/
-        my-example.tag.html
-        my-example.(css|less|scss)    <-- external stylesheet next to tag file
-        ...
+```
+my-example/
+|-- my-example.tag.html
+|-- my-example.(css|less|scss)    <-- external stylesheet next to tag file
+`-- ...
+```
+
+[↑ back to Table of Contents](#table-of-contents)
 
 
 ## Use tag name as style scope
@@ -352,27 +585,82 @@ my-example li { }
 .my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
 ```
 
+[↑ back to Table of Contents](#table-of-contents)
 
-# Add a tag demo
+
+## Document your tag API
+
+A Riot tag instance is created by using the tag element inside your application. The instance is configured through its custom attributes. For the tag to be used by other developers, these custom attributes - the tag's API - should be documented in a `README.md` file.
+
+### Why?
+
+* Documentation provides developers with a high level overview to a module, without the need to go through all its code. This makes a module more accessible and easier to use.
+* A tag's API is the set of custom attributes through which its configured. Therefore these are especially of interest to other developers which only want to consume (and not develop) the tag.
+* Documentation formalises the API and tells developers which functionality to keep backwards compatible when modifying the tag's code.
+* `README.md` is the de facto standard filename for documentation to be read first. Code repository hosting services (Github, Bitbucket, Gitlab etc) display the contents of the the README's, directly when browsing through source directories. This applies to our module directories as well.
+  
+### How?
+
+Add a `README.md` file to the tag's module directory:
+
+```
+range-slider/
+|-- range-slider.tag.html
+|--	range-slider.less
+`--	README.md
+```
+	
+Within the README file, describe the functionality and the usage of the module. For a tag module its most useful to describe the custom attributes it supports as those are its API:
+
+```markdown
+# Range slider
+
+## Functionality
+
+The range slider lets the user to set a numeric range by dragging a handle on a slider rail for both the start and end value.
+
+This module uses the [noUiSlider](http://refreshless.com/nouislider/) for cross browser and touch support.
+
+## Usage
+
+`<range-slider>` supports the following custom tag attributes:
+
+| attribute | type | description
+| --- | --- | ---
+| `min` | Number | number where range starts (lower limit).
+| `max` | Number | Number where range ends (upper limit).
+| `values` | Number[] *optional* | Array containing start and end value.  E.g. `values="[10, 20]"`. Defaults to `[opts.min, opts.max]`.
+| `step` | Number *optional* | Number to increment / decrement values by. Defaults to 1.
+| `on-slide` | Function *optional* | Function called with `(values, HANDLE)` while a user drags the start (`HANDLE == 0`) or end (`HANDLE == 1`) handle. E.g. `on-slide={ updateInputs }`, with `tag.updateInputs = (values, HANDLE) => { const value = values[HANDLE]; }`.
+| `on-end` | Function *optional* | Function called with `(values, HANDLE)` when user stops dragging a handle.
+
+For customising the slider appearance see the [Styling section in the noUiSlider docs](http://refreshless.com/nouislider/more/#section-styling).
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Add a tag demo
 
 Add a `*.demo.html` file with demos of the tag with different configurations, showing how the tag can be used.
 
-## Why?
+### Why?
 
-* A tag demo proofs the module works in isolation.
+* A tag demo proves the module works in isolation.
 * A tag demo gives developers a preview before having to dig into the documentation or code.
 * Demos can illustrate all the possible configurations and variations a tag can be used in. 
 
-## How?
+### How?
 
 Add a `*.demo.html` file to your module directory:
 
-	modules/
-		city-map/
-			city-map.tag.html
-			city-map.demo.html
-			city-map.css
-			...
+```
+city-map/
+|--	city-map.tag.html
+|--	city-map.demo.html
+|--	city-map.css
+`--	...
+```
 
 Inside the demo file:
 
@@ -420,3 +708,5 @@ Example demo file in `city-tag` module:
 </body>
 ```
 Note: this is a working concept, but could be much cleaner using build scripts.
+
+[↑ back to Table of Contents](#table-of-contents)
