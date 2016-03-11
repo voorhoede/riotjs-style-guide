@@ -108,11 +108,11 @@ The file extension depends on the purpose of the file.
 
 ```
 modules/
-`--	my-example/
-    |-- my-example.tag.html
-	|--	my-example.less
-	|--	...
-	`--	README.md
+└── my-example/
+    ├── my-example.tag.html
+    ├── my-example.less
+    ├── ...
+    └── README.md
 ```
 
 If your project uses nested structures, you can nest a module within a module.
@@ -120,13 +120,13 @@ For example a generic `radio-group` module may be placed directly inside "module
 
 ```
 modules/
-|--	radio-group/
-|   `-- radio-group.tag.html
-`--	search-form/
-    |-- search-form.tag.html
-    |-- ...
-    `-- search-filters/
-        `-- search-filters.tag.html
+├── radio-group/
+|   └── radio-group.tag.html
+└── search-form/
+    ├── search-form.tag.html
+    ├── ...
+    └── search-filters/
+        └── search-filters.tag.html
 ```            
 
 [↑ back to Table of Contents](#table-of-contents)
@@ -561,9 +561,9 @@ Styles related to the tag and its markup, should be placed in a separate stylesh
 
 ```
 my-example/
-|-- my-example.tag.html
-|-- my-example.(css|less|scss)    <-- external stylesheet next to tag file
-`-- ...
+├── my-example.tag.html
+├── my-example.(css|less|scss)    <-- external stylesheet next to tag file
+└── ...
 ```
 
 [↑ back to Table of Contents](#table-of-contents)
@@ -614,9 +614,9 @@ Add a `README.md` file to the tag's module directory:
 
 ```
 range-slider/
-|-- range-slider.tag.html
-|--	range-slider.less
-`--	README.md
+├── range-slider.tag.html
+├── range-slider.less
+└── README.md
 ```
 	
 Within the README file, describe the functionality and the usage of the module. For a tag module its most useful to describe the custom attributes it supports as those are its API:
@@ -665,10 +665,10 @@ Add a `*.demo.html` file to your module directory:
 
 ```
 city-map/
-|--	city-map.tag.html
-|--	city-map.demo.html
-|--	city-map.css
-`--	...
+├── city-map.tag.html
+├── city-map.demo.html
+├── city-map.css
+└── ...
 ```
 
 Inside the demo file:
