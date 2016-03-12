@@ -453,7 +453,6 @@ The exception to this rule are anonymous child tags in a [for each loop](http://
 
 <child-tag>
 	<span>{ opts.value }</span> <!-- use value passed by parent -->
-	<script></script>
 </child-tag>
 
 <!-- avoid -->
