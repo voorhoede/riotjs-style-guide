@@ -24,6 +24,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
 * [Keep tag options primitive](#keep-tag-options-primitive)
+* [Sanatize tag option values](#sanatize-tag-option-values)
 * [Assign `this` to `tag`](#assign-this-to-tag)
 * [Put tag properties and methods on top](#put-tag-properties-and-methods-on-top)
 * [Avoid fake ES6 syntax](#avoid-fake-es6-syntax)
@@ -273,6 +274,66 @@ Use a tag attribute per option, with a primitive or function as value:
 	</ul>
 </menu-item>
 ```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Sanatize tag option values
+
+Tag options are passed via custom HTML attributes. The values of these attributes can be Riot expressions (`attr="{ var }"`) or plain strings (`attr="value"`) or missing entirely. If the functionality of your tag only supports specific values, you should configure defaults and sanatize these tag option values. For example if an option should always be a number, convert it to one (`tag.attr = Number(opts.attr)`).
+
+## Why?
+
+Sanatizing your tag option values esnures your tag will always function (defensive programming). Even when other developers later use your tags in ways you haven't thought of yet.
+
+## How?
+
+Use default values for optional tag options. For instance [Riot's `<todo>` example](http://riotjs.com/guide/#example) could be improved to also work if no `items` are provided.
+
+```html
+<!-- recommended: -->
+<todo>
+   ...
+   <script>
+   	this.items = opts.items || []; // default to empty list
+   	// ...
+   </script>
+</todo>
+```
+
+Sanitize option values in case they are not in the expected format.
+
+```html
+<!-- recommended: -->
+<output-sum>
+    <output>{ sum }</output>
+    <script>
+        var tag = this;
+        tag.sum = 0;
+        tag.on('update', function() {
+            tag.sum = (opts.numbers || []) // fallback to empty list
+            .reduce(function(sum, num){
+                return sum + Number(num); // convert value to number
+            }, 0);
+        }
+    </script>
+</output-sum>
+```
+
+This ensures the following use cases all work:
+
+```html
+<output-sum numbers="{ [1, 2, 3, 4] }" /> <!-- outputs: 10 -->
+<output-sum /> <!-- outputs: 0 (instead of throwing an error) -->
+<output-sum numbers="{ ['1', '2' ] }"> <!-- outputs: 3 (instead of '12' ) -->
+
+<input type="number" name="num1" onchange="{ update }"> +
+<input type="number" name="num2" onchange="{ update }"> +
+<input type="number" name="num3" onchange="{ update }"> =
+<output-sum numbers="{ [num1.value, num2.value, num3.value] }" /> 
+<!-- outputs sum of inputs instead of concatenated values -->
+```
+
 
 [↑ back to Table of Contents](#table-of-contents)
 
