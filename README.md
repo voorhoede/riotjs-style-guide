@@ -33,6 +33,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
 * [Document your tag API](#document-your-tag-api)
 * [Add a tag demo](#add-a-tag-demo)
+* [Lint your tag files](#lint-your-tag-files)
 
 
 ## Module based development
@@ -716,5 +717,63 @@ Example demo file in `city-tag` module:
 </body>
 ```
 Note: this is a working concept, but could be much cleaner using build scripts.
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Lint your tag files
+
+Linters improve code consistency and help trace syntax errors. With some extra configuration Riot tag files can also be linted.
+
+### Why?
+
+* Linting tag files ensures all developers use the same code style.
+* Linting tag files helps you trace syntax errors before it's too late.
+
+## How?
+
+To allow linters to extract the scripts from your `*.tag.html` files, [put script inside a `<script>` tag](#use-script-inside-tag) and [keep tag expressions simple](#keep-tag-expressions-simple) (as linters don't understand those). Then configure your linter to allow `riot` and tag `opts`.
+
+### ESLint
+
+[ESLint](http://eslint.org/) requires an extra [ESLint HTML plugin](https://github.com/BenoitZugmeyer/eslint-plugin-html#eslint-plugin-html) to extract the script from the tag files.
+
+Configure ESLint in `modules/.eslintrc` (so IDEs can interpret it as well):
+```json
+{
+	"extends": "eslint:recommended",
+	"plugins": ["html"],
+	"env": {
+		"browser": true
+	},
+	"globals": {
+		"opts": true,
+		"riot": true
+	}
+}
+```
+
+Run ESLint
+```bash
+eslint modules/**/*.tag.html
+```
+
+### JSHint
+
+[JSHint](http://jshint.com/) can parse HTML (using `--extra-ext`) and extract script (using `--extract=auto`). 
+
+Configure JSHint in `modules/.jshintrc` (so IDEs can interpret it as well):
+```json
+{
+	"browser": true,
+	"predef": ["opts", "riot"]
+}
+```
+
+Run JSHint
+```bash
+jshint --config modules/.jshintrc --extra-ext=html --extract=auto modules/
+```
+Note: JSHint does not accept `tag.html` as extension, but only `html`.
 
 [↑ back to Table of Contents](#table-of-contents)
