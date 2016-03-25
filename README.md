@@ -24,7 +24,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
 * [Keep tag options primitive](#keep-tag-options-primitive)
-* [Sanatize tag option values](#sanatize-tag-option-values)
+* [Harness your tag options](#harness-your-tag-options)
 * [Assign `this` to `tag`](#assign-this-to-tag)
 * [Put tag properties and methods on top](#put-tag-properties-and-methods-on-top)
 * [Avoid fake ES6 syntax](#avoid-fake-es6-syntax)
@@ -278,62 +278,61 @@ Use a tag attribute per option, with a primitive or function as value:
 [↑ back to Table of Contents](#table-of-contents)
 
 
-## Sanatize tag option values
+## Harness your tag options
 
-Tag options are passed via custom HTML attributes. The values of these attributes can be Riot expressions (`attr="{ var }"`) or plain strings (`attr="value"`) or missing entirely. If the functionality of your tag only supports specific values, you should configure defaults and sanatize these tag option values. For example if an option should always be a number, convert it to one (`tag.attr = Number(opts.attr)`).
+In Riot your tag options are your API. A robust and predictable API makes your tags easy to use by other developers.
+
+Tag options are passed via custom HTML attributes. The values of these attributes can be Riot expressions (`attr="{ var }"`) or plain strings (`attr="value"`) or missing entirely. You should **harness your tag options** to allow for these different cases.
 
 ## Why?
 
-Sanatizing your tag option values esnures your tag will always function (defensive programming). Even when other developers later use your tags in ways you haven't thought of yet.
+Harnessing your tag options ensures your tag will always function (defensive programming). Even when other developers later use your tags in ways you haven't thought of yet.
 
 ## How?
 
-Use default values for optional tag options. For instance [Riot's `<todo>` example](http://riotjs.com/guide/#example) could be improved to also work if no `items` are provided.
+* Use defaults for option values.
+* Use type conversion to cast option values to expected type.
+* Check if option exists before using it.
 
+For instance [Riot's `<todo>` example](http://riotjs.com/guide/#example) could be improved to also work if no `items` are provided, by using a default:
+
+```javascript
+this.items = opts.items || []; // default to empty list
+```
+Ensuring different use cases all work:
 ```html
-<!-- recommended: -->
-<todo>
-   ...
-   <script>
-   	this.items = opts.items || []; // default to empty list
-   	// ...
-   </script>
-</todo>
+<todo items="{ [{ title:'Apples' }, { title:'Oranges', done:true }] }"> <!-- uses given list -->
+<todo> <!-- uses empty list -->
 ```
 
-Sanitize option values in case they are not in the expected format.
+The `<range-slider>` in [keep tag options primitive](https://github.com/voorhoede/riotjs-style-guide#keep-tag-options-primitive) expects numbers for `min`, `max` and `step`. Use type conversion: 
 
+```javascript
+// if step option is valid, use as number otherwise default to one. 
+this.step = !isNaN(Number(opts.step)) ? Number(opts.step) : 1;
+```
+Ensuring different use cases all work:
 ```html
-<!-- recommended: -->
-<output-sum>
-    <output>{ sum }</output>
-    <script>
-        var tag = this;
-        tag.sum = 0;
-        tag.on('update', function() {
-            tag.sum = (opts.numbers || []) // fallback to empty list
-            .reduce(function(sum, num){
-                return sum + Number(num); // convert value to number
-            }, 0);
-        }
-    </script>
-</output-sum>
+<range-slider> <!-- uses default -->
+<range-slider step="5"> <!-- converts "5" to number 5 -->
+<range-slider step="{ x }"> <!-- tries to use `x` -->
 ```
 
-This ensures the following use cases all work:
+The `<range-slider>` also supports *optional* `on-slide` and `on-end` callback. Check option exists and is in expected format before using it:
 
-```html
-<output-sum numbers="{ [1, 2, 3, 4] }" /> <!-- outputs: 10 -->
-<output-sum /> <!-- outputs: 0 (instead of throwing an error) -->
-<output-sum numbers="{ ['1', '2' ] }"> <!-- outputs: 3 (instead of '12' ) -->
-
-<input type="number" name="num1" onchange="{ update }"> +
-<input type="number" name="num2" onchange="{ update }"> +
-<input type="number" name="num3" onchange="{ update }"> =
-<output-sum numbers="{ [num1.value, num2.value, num3.value] }" /> 
-<!-- outputs sum of inputs instead of concatenated values -->
+```javascript
+slider.on('slide', (values, handle) => {
+	if (typeof opts.onSlide === 'function') {
+		opts.onSlide(values, handle);
+	}
+}
 ```
-
+Ensuring different use cases all work:
+```html
+<range-slider> <!-- does nothing -->
+<range-slider on-slide="{ updateInputs }"> <!-- calls updateInputs on slide -->
+<range-slider on-slide="invalid option"> <!-- does nothing -->
+```
 
 [↑ back to Table of Contents](#table-of-contents)
 
