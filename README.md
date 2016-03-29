@@ -732,7 +732,7 @@ Linters improve code consistency and help trace syntax errors. With some extra c
 
 ## How?
 
-To allow linters to extract the scripts from your `*.tag.html` files, [put script inside a `<script>` tag](#use-script-inside-tag) and [keep tag expressions simple](#keep-tag-expressions-simple) (as linters don't understand those). Then configure your linter to allow `riot` and tag `opts`.
+To allow linters to extract the scripts from your `*.tag.html` files, [put script inside a `<script>` tag](#use-script-inside-tag) and [keep tag expressions simple](#keep-tag-expressions-simple) (as linters don't understand those). Configure your linter to allow global variables `riot` and tag `opts`.
 
 ### ESLint
 
