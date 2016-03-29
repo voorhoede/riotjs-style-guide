@@ -24,6 +24,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use `<script>` inside tag](#use-script-inside-tag)
 * [Keep tag expressions simple](#keep-tag-expressions-simple)
 * [Keep tag options primitive](#keep-tag-options-primitive)
+* [Harness your tag options](#harness-your-tag-options)
 * [Assign `this` to `tag`](#assign-this-to-tag)
 * [Put tag properties and methods on top](#put-tag-properties-and-methods-on-top)
 * [Avoid fake ES6 syntax](#avoid-fake-es6-syntax)
@@ -272,6 +273,65 @@ Use a tag attribute per option, with a primitive or function as value:
 		</li>
 	</ul>
 </menu-item>
+```
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Harness your tag options
+
+In Riot your tag options are your API. A robust and predictable API makes your tags easy to use by other developers.
+
+Tag options are passed via custom HTML attributes. The values of these attributes can be Riot expressions (`attr="{ var }"`) or plain strings (`attr="value"`) or missing entirely. You should **harness your tag options** to allow for these different cases.
+
+## Why?
+
+Harnessing your tag options ensures your tag will always function (defensive programming). Even when other developers later use your tags in ways you haven't thought of yet.
+
+## How?
+
+* Use defaults for option values.
+* Use type conversion to cast option values to expected type.
+* Check if option exists before using it.
+
+For instance [Riot's `<todo>` example](http://riotjs.com/guide/#example) could be improved to also work if no `items` are provided, by using a default:
+
+```javascript
+this.items = opts.items || []; // default to empty list
+```
+Ensuring different use cases all work:
+```html
+<todo items="{ [{ title:'Apples' }, { title:'Oranges', done:true }] }"> <!-- uses given list -->
+<todo> <!-- uses empty list -->
+```
+
+The `<range-slider>` in [keep tag options primitive](https://github.com/voorhoede/riotjs-style-guide#keep-tag-options-primitive) expects numbers for `min`, `max` and `step`. Use type conversion: 
+
+```javascript
+// if step option is valid, use as number otherwise default to one. 
+this.step = !isNaN(Number(opts.step)) ? Number(opts.step) : 1;
+```
+Ensuring different use cases all work:
+```html
+<range-slider> <!-- uses default -->
+<range-slider step="5"> <!-- converts "5" to number 5 -->
+<range-slider step="{ x }"> <!-- tries to use `x` -->
+```
+
+The `<range-slider>` also supports *optional* `on-slide` and `on-end` callback. Check option exists and is in expected format before using it:
+
+```javascript
+slider.on('slide', (values, handle) => {
+	if (typeof opts.onSlide === 'function') {
+		opts.onSlide(values, handle);
+	}
+}
+```
+Ensuring different use cases all work:
+```html
+<range-slider> <!-- does nothing -->
+<range-slider on-slide="{ updateInputs }"> <!-- calls updateInputs on slide -->
+<range-slider on-slide="invalid option"> <!-- does nothing -->
 ```
 
 [↑ back to Table of Contents](#table-of-contents)
