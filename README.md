@@ -2,6 +2,8 @@
 
 Opinionated *RiotJS Style Guide* for teams by [De Voorhoede](https://twitter.com/devoorhoede).
 
+[![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
+
 
 ## Purpose
 
@@ -33,6 +35,7 @@ This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpap
 * [Use tag name as style scope](#use-tag-name-as-style-scope)
 * [Document your tag API](#document-your-tag-api)
 * [Add a tag demo](#add-a-tag-demo)
+* [Add badge to your project](#add-badge-to-your-project)
 
 
 ## Module based development
@@ -716,5 +719,36 @@ Example demo file in `city-tag` module:
 </body>
 ```
 Note: this is a working concept, but could be much cleaner using build scripts.
+
+[↑ back to Table of Contents](#table-of-contents)
+
+
+## Add badge to your project
+
+You can use the *RiotJS Style Guide badge* to link to this guide:
+
+[![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
+
+### Why?
+
+Inform other developers your project is following the RiotJS Style Guide. And let them know where they can find this guide.
+
+### How?
+
+Include the badge in your project. In markdown:
+
+```markdown
+[![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
+```
+
+Or html:
+
+```html
+<a href="https://github.com/voorhoede/riotjs-style-guide">
+    <img alt="RiotJS Style Guide badge"
+    	 src="https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg">
+</a>
+```
+
 
 [↑ back to Table of Contents](#table-of-contents)
