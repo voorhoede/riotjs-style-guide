@@ -16,6 +16,9 @@ This guide provides a uniform way to structure your [RiotJS](http://riotjs.com/)
 
 This guide is inspired by the [AngularJS Style Guide](https://github.com/johnpapa/angular-styleguide) by John Papa.
 
+## Demos
+
+Our [RiotJS demos](https://github.com/voorhoede/riotjs-demos#riotjs-demos-) are a companion to this guide, illustrating the guidelines with practical examples.
 
 ## Table of Contents
 
