@@ -2,6 +2,10 @@
 
 Opinionated *RiotJS Style Guide* for teams by [De Voorhoede](https://twitter.com/devoorhoede).
 
+> “Finally a #riotjs list of good practices.. bravo!”
+>
+> — [Gianluca Guarini](https://twitter.com/gianlucaguarini/status/707932661558460417), RiotJS
+
 [![RiotJS Style Guide badge](https://cdn.rawgit.com/voorhoede/riotjs-style-guide/master/riotjs-style-guide.svg)](https://github.com/voorhoede/riotjs-style-guide)
 
 
