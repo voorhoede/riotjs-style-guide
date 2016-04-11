@@ -492,7 +492,7 @@ add() {
 }
 ```
 
-[Disable transformation of the fake ES6 syntax](http://riotjs.com/guide/compiler/#no-transformation) during pre-compilation by setting `type` to `none`:
+**Tip**: [Disable transformation of the fake ES6 syntax](http://riotjs.com/guide/compiler/#no-transformation) during pre-compilation by setting `type` to `none`:
 
 ```bash
 riot --type none
