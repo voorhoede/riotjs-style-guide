@@ -61,7 +61,7 @@ If your module does too much or gets too big, split it up into smaller modules w
 As a rule of thumb, try to keep each tag file less than 100 lines of code.
 Also ensure your tag module works in isolation. For instance by adding a stand-alone demo.
 
-If you use an [AMD](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) or CommonJS module loader, you need to [compile your tags using the `--modular` (`-m`) flag](http://riotjs.com/guide/compiler/#amd-and-commonjs):
+**Tip**: If you use an [AMD](https://github.com/amdjs/amdjs-api/blob/master/AMD.md) or CommonJS module loader, you need to [compile your tags using the `--modular` (`-m`) flag](http://riotjs.com/guide/compiler/#amd-and-commonjs):
 ```bash
 # enable AMD and CommonJS
 riot --modular
