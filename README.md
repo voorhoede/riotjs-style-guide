@@ -168,6 +168,11 @@ In case of [pre-compilation](http://riotjs.com/guide/compiler/#pre-compilation),
 riot --ext tag.html modules/ dist/tags.js
 ```
 
+In case your using the [Webpack tag loader](https://github.com/srackham/tag-loader), [configure the loader](http://webpack.github.io/docs/using-loaders.html#configuration) to match the extension:
+```javascript
+{ test: /\.tag.html$/, loader: 'tag' }
+```
+
 [↑ back to Table of Contents](#table-of-contents)
 
 
