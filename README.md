@@ -808,11 +808,11 @@ Linters improve code consistency and help trace syntax errors. With some extra c
 * Linting tag files ensures all developers use the same code style.
 * Linting tag files helps you trace syntax errors before it's too late.
 
-## How?
+### How?
 
 To allow linters to extract the scripts from your `*.tag.html` files, [put script inside a `<script>` tag](#use-script-inside-tag) and [keep tag expressions simple](#keep-tag-expressions-simple) (as linters don't understand those). Configure your linter to allow global variables `riot` and tag `opts`.
 
-### ESLint
+#### ESLint
 
 [ESLint](http://eslint.org/) requires an extra [ESLint HTML plugin](https://github.com/BenoitZugmeyer/eslint-plugin-html#eslint-plugin-html) to extract the script from the tag files.
 
@@ -836,7 +836,7 @@ Run ESLint
 eslint modules/**/*.tag.html
 ```
 
-### JSHint
+#### JSHint
 
 [JSHint](http://jshint.com/) can parse HTML (using `--extra-ext`) and extract script (using `--extract=auto`). 
 
