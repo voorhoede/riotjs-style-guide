@@ -659,13 +659,13 @@ Alternatively the module name can be used as CSS class namespace.
 
 ### How?
 
-Use the tag name as selector, as parent selector or as namespace prefix (depending on your CSS naming strategy):
+Use the tag name as selector, as parent selector or as namespace prefix (depending on your CSS naming strategy). Also consider including selectors for tags mounted via `data-is`:
 
 ```css
 /* recommended */
-my-example { }
-my-example li { }
-.my-example__item { }
+my-example, [data-is=my-example] { }
+my-example, [data-is=my-example] li { }
+.my-example__item, [data-is=my-example__item] { }
 
 /* avoid */
 .my-alternative { } /* not scoped to tag or module name */
