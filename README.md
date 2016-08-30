@@ -659,18 +659,20 @@ Alternatively the module name can be used as CSS class namespace.
 
 ### How?
 
-Use the tag name as selector, as parent selector or as namespace prefix (depending on your CSS naming strategy). Also consider including selectors for tags mounted via `data-is`:
+Use the tag name as selector, as parent selector or as namespace prefix (depending on your CSS naming strategy).
 
 ```css
 /* recommended */
-my-example, [data-is=my-example] { }
-my-example, [data-is=my-example] li { }
-.my-example__item, [data-is=my-example__item] { }
+my-example { }
+my-example li { }
+.my-example__item { }
 
 /* avoid */
 .my-alternative { } /* not scoped to tag or module name */
 .my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
 ```
+
+note: If you're using data-is= (introduced in v2.3.17) to initiate Riot tags, you can use `[data-is="my-example"]` as CSS selector instead of `.my-example`.
 
 [↑ back to Table of Contents](#table-of-contents)
 
