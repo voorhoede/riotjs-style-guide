@@ -672,7 +672,8 @@ my-example li { }
 .my-parent .my-example { } /* .my-parent is outside scope, so should not be used in this file */
 ```
 
-note: If you're using data-is= (introduced in v2.3.17) to initiate Riot tags, you can use `[data-is="my-example"]` as CSS selector instead of `.my-example`.
+note: If you're using [`data-is=`](http://riotjs.com/guide/#html-elements-as-tags) (introduced in [v2.3.17](http://riotjs.com/release-notes/#march-9-2016)) to initiate Riot tags, you can use `[data-is="my-example"]` as CSS selector instead of `.my-example`.
+
 
 [↑ back to Table of Contents](#table-of-contents)
 
