@@ -173,6 +173,13 @@ In case you're using the [Webpack tag loader](https://github.com/srackham/tag-lo
 { test: /\.tag.html$/, loader: 'tag' }
 ```
 
+### Server Side rendering
+
+When requiring tags server side, there is no way (yet) to set custom extensions. There for, if you use server side rendering you either:
+
+* need to pre-compile your tags, so you can require the resulting `.js` files.
+* use the default `.tag` extension because Riot lets NodeJS require this extension by default.
+
 [↑ back to Table of Contents](#table-of-contents)
 
 
