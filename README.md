@@ -57,7 +57,7 @@ Small modules are easier to learn, understand, maintain, reuse and debug. Both b
 
 Each riot tag (like any module) must be [FIRST](https://addyosmani.com/first/): *Focused* ([single responsibility](http://en.wikipedia.org/wiki/Single_responsibility_principle)), *Independent*, *Reusable*, *Small* and *Testable*.
 
-If your module does too much or gets too big, split it up into smaller modules which each do just on thing.
+If your module does too much or gets too big, split it up into smaller modules which each do just one thing.
 As a rule of thumb, try to keep each tag file less than 100 lines of code.
 Also ensure your tag module works in isolation. For instance by adding a stand-alone demo.
 
